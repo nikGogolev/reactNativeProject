@@ -5,6 +5,7 @@ export const styles = StyleSheet.create({
   todoText: {
     fontSize: 17,
     marginLeft: 17,
+    color: '#000',
   },
   todoTextCrossed: {
     textDecorationLine: 'line-through',
