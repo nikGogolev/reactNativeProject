@@ -7,6 +7,7 @@ export const GET_TODOS_REQUEST = 'TODOS::GET_TODOS_REQUEST';
 export const GET_TODOS_SUCCESS = 'TODOS::GET_TODOS_SUCCESS';
 export const GET_TODOS_FAILURE = 'TODOS::GET_TODOS_FAILURE';
 export const CHANGE_TODO = 'TODOS::CHANGE_TODO';
+export const REMOVE_TODO = 'TODOS::REMOVE_TODO';
 
 export const getTodosRequest = () => ({
   type: GET_TODOS_REQUEST,
@@ -26,7 +27,7 @@ export const getTodos = () => (dispatch: Dispatch<any>) => {
   fetch(TODOS_URL)
     .then<Todo[]>(res => res.json())
     .then(result => {
-      const todos = result.slice(0, 20).reduce<TodosMap>((acc, el) => {
+      const todos = result.reduce<TodosMap>((acc, el) => {
         acc[el.id] = el;
         return acc;
       }, {});
@@ -41,4 +42,9 @@ export const getTodos = () => (dispatch: Dispatch<any>) => {
 export const changeTodo = (newTodo: Todo) => ({
   type: CHANGE_TODO,
   payload: newTodo,
+});
+
+export const removeTodo = (id: number) => ({
+  type: REMOVE_TODO,
+  payload: id,
 });
