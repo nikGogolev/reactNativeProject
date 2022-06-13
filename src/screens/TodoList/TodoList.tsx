@@ -1,13 +1,20 @@
 import React, {useEffect} from 'react';
-import {ActivityIndicator, ScrollView} from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  ListRenderItemInfo,
+  View,
+} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {Error} from '../../components/Error/Error';
+import {TextField} from '../../components/TextField/TextField';
 
 import {TodoItem} from '../../components/TodoItem/TodoItem';
-import {changeTodo, getTodos} from '../../store/actions';
+import {changeTodo, getTodos, removeTodo} from '../../store/actions';
 import {selectStatus, selectTodos} from '../../store/selectors';
 import {FETCH_STATUSES} from '../../utils';
 import {styles} from './TodoList.styles';
+import {Todo} from './TodoList.types';
 
 export const TodoList = () => {
   const todos = useSelector(selectTodos);
@@ -24,18 +31,44 @@ export const TodoList = () => {
     dispatch(getTodos());
   }, [dispatch]);
 
+  const addTodo = (text: string) => {
+    const newTodo = {
+      title: text,
+      id: +new Date(),
+      completed: false,
+    };
+    dispatch(changeTodo(newTodo));
+  };
+
+  const handleRemoveTodo = (id: number) => {
+    dispatch(removeTodo(id));
+    console.log(id);
+  };
+
+  const renderTodo = ({item, index}: ListRenderItemInfo<Todo>) => (
+    <TodoItem
+      todo={item}
+      i={index}
+      onComplete={handlePressTodo}
+      key={item.id}
+      onDelete={handleRemoveTodo}
+    />
+  );
+
   return (
-    <ScrollView style={styles.root}>
+    <View style={styles.root}>
       {status === FETCH_STATUSES.failure ? (
         <Error />
       ) : status === FETCH_STATUSES.request ||
         status === FETCH_STATUSES.idle ? (
         <ActivityIndicator />
       ) : (
-        Object.values(todos).map((el, i) => (
-          <TodoItem todo={el} i={i} onComplete={handlePressTodo} key={el.id} />
-        ))
+        <FlatList
+          ListHeaderComponent={() => <TextField onSubmit={addTodo} />}
+          data={Object.values(todos).reverse()}
+          renderItem={renderTodo}
+        />
       )}
-    </ScrollView>
+    </View>
   );
 };

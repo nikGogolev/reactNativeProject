@@ -27,8 +27,14 @@ export type ChangeTodoAction = {
   payload: Todo;
 };
 
+export type RemoveTodoAction = {
+  type: string;
+  payload: number;
+};
+
 export type Action =
   | GetTodosRequestAction
   | GetTodosSuccessAction
   | GetTodosFailureAction
-  | ChangeTodoAction;
+  | ChangeTodoAction
+  | RemoveTodoAction;

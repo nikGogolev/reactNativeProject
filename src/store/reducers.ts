@@ -4,11 +4,13 @@ import {
   GET_TODOS_FAILURE,
   GET_TODOS_REQUEST,
   GET_TODOS_SUCCESS,
+  REMOVE_TODO,
 } from './actions';
 import {
   Action,
   ChangeTodoAction,
   GetTodosSuccessAction,
+  RemoveTodoAction,
   TodosState,
 } from './types';
 
@@ -47,6 +49,12 @@ const todosReducer = (state = initialState, action: Action) => {
           [typedAction.payload.id]: typedAction.payload,
         },
       };
+    }
+    case REMOVE_TODO: {
+      const typedAction = action as RemoveTodoAction;
+      const newTodos = {...state.todos};
+      delete newTodos[typedAction.payload];
+      return {...state, todos: {...newTodos}};
     }
     default:
       return state;
