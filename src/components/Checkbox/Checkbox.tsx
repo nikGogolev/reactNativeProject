@@ -3,7 +3,7 @@ import {Animated} from 'react-native';
 import {styles} from './Checkbox.styles';
 import {CheckboxProps} from './Checkbox.types';
 
-export const Checkbox = ({checked}: CheckboxProps) => {
+export const Checkbox = ({checked, onPress}: CheckboxProps) => {
   const checkboxScale = useRef(new Animated.Value(0));
 
   const handlePress = () => {
@@ -13,6 +13,7 @@ export const Checkbox = ({checked}: CheckboxProps) => {
       useNativeDriver: true,
     }).start(() => {
       checkboxScale.current.setValue(0);
+      onPress();
     });
   };
 

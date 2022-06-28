@@ -24,6 +24,7 @@ const App = () => {
       <PersistGate persistor={persistor}>
         {/* <SafeAreaView style={backgroundStyle}> */}
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+
         <NavigationContainer>
           <Tab.Navigator>
             <Tab.Screen
