@@ -1,24 +1,16 @@
-import React, {useEffect} from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  ListRenderItemInfo,
-  View,
-} from 'react-native';
+import React, {useEffect, useMemo} from 'react';
+import {ListRenderItemInfo, SectionList, Text} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {Error} from '../../components/Error/Error';
 import {TextField} from '../../components/TextField/TextField';
 
 import {TodoItem} from '../../components/TodoItem/TodoItem';
-import {changeTodo, getTodos, removeTodo} from '../../store/actions';
-import {selectStatus, selectTodos} from '../../store/selectors';
-import {FETCH_STATUSES} from '../../utils';
+import {changeTodo, removeTodo, getTodos} from '../../store/actions';
+import {selectTodos} from '../../store/selectors';
 import {styles} from './TodoList.styles';
-import {Todo} from './TodoList.types';
+import {Todo, TodoListProps} from './TodoList.types';
 
-export const TodoList = () => {
+export const TodoList = ({navigation}: TodoListProps) => {
   const todos = useSelector(selectTodos);
-  const status = useSelector(selectStatus);
   const dispatch = useDispatch();
 
   const handlePressTodo = (id: number) => {
@@ -26,49 +18,66 @@ export const TodoList = () => {
     dispatch(changeTodo(updatedTodo));
   };
 
+  const handleAddTodo = (text: string) => {
+    const newTodo = {
+      id: Date.now(),
+      completed: false,
+      title: text,
+      imgs: [],
+    };
+
+    dispatch(changeTodo(newTodo));
+  };
+
+  const handleDeleteTodo = (id: number) => {
+    dispatch(removeTodo(id));
+  };
+
+  const toDetails = (id: number) => {
+    navigation.navigate('TodoDetails', {todoId: id});
+  };
+
   useEffect(() => {
     // @ts-ignore
     dispatch(getTodos());
   }, [dispatch]);
 
-  const addTodo = (text: string) => {
-    const newTodo = {
-      title: text,
-      id: +new Date(),
-      completed: false,
-    };
-    dispatch(changeTodo(newTodo));
-  };
-
-  const handleRemoveTodo = (id: number) => {
-    dispatch(removeTodo(id));
-    console.log(id);
-  };
-
   const renderTodo = ({item, index}: ListRenderItemInfo<Todo>) => (
     <TodoItem
       todo={item}
       i={index}
+      onPress={toDetails}
       onComplete={handlePressTodo}
+      onDelete={handleDeleteTodo}
       key={item.id}
-      onDelete={handleRemoveTodo}
     />
   );
 
+  const sections = useMemo(() => {
+    return Object.values(todos).reduce<{completed: Todo[]; notCompl: Todo[]}>(
+      (acc, el) => {
+        if (el.completed) {
+          acc.completed.push(el);
+        } else {
+          acc.notCompl.push(el);
+        }
+        return acc;
+      },
+      {completed: [], notCompl: []},
+    );
+  }, [todos]);
+
   return (
-    <View style={styles.root}>
-      {status === FETCH_STATUSES.failure ? (
-        <Error />
-      ) : status === FETCH_STATUSES.request ||
-        status === FETCH_STATUSES.idle ? (
-        <ActivityIndicator />
-      ) : (
-        <FlatList
-          ListHeaderComponent={() => <TextField onSubmit={addTodo} />}
-          data={Object.values(todos).reverse()}
-          renderItem={renderTodo}
-        />
-      )}
-    </View>
+    <SectionList
+      contentContainerStyle={styles.container}
+      style={styles.root}
+      ListHeaderComponent={() => <TextField onSubmit={handleAddTodo} />}
+      sections={[
+        {title: 'Completed', data: sections.completed},
+        {title: 'Not Completed', data: sections.notCompl},
+      ]}
+      renderSectionHeader={({section}) => <Text>{section.title}</Text>}
+      renderItem={renderTodo}
+    />
   );
 };

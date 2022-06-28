@@ -1,3 +1,5 @@
 export type TextFieldProps = {
-  onSubmit: (text: string) => void;
+  initialValue?: string;
+  onSubmit?: (text: string) => void;
+  onChangeText?: (text: string) => void;
 };
