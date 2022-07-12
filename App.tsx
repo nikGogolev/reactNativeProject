@@ -16,6 +16,7 @@ Ionicons.loadFont();
 MaterialCommunityIcons.loadFont();
 
 const Tab = createBottomTabNavigator();
+
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 

@@ -6,6 +6,6 @@ import {BackButtonProps} from './BackButton.types';
 
 export const BackButton = ({onPress}: BackButtonProps) => (
   <TouchableOpacity onPress={onPress} style={styles.root}>
-    <Icon name="chevron-left" size={25} />
+    <Icon name="chevron-left" size={25} color="black" />
   </TouchableOpacity>
 );

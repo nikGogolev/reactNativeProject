@@ -26,8 +26,10 @@ export const TodoItem = ({
   };
   return (
     <View style={styles.row}>
-      <TouchableOpacity onPress={handlePress} style={styles.root}>
+      <TouchableOpacity>
         <Checkbox checked={todo.completed} onPress={handleComplete} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handlePress} style={styles.root}>
         <Text style={styles.todoText}>
           {i + 1}: {todo.title}
         </Text>

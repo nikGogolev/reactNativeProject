@@ -7,6 +7,8 @@ export type Todo = {
   id: number;
   title: string;
   userId?: number;
+  notificationIsOn?: boolean;
+  notificationDateTime?: Date;
   imgs: Asset[];
 };
 
