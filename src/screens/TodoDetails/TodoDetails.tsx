@@ -152,7 +152,6 @@ export const TodoDetails = ({route, navigation}: TodoDetailsProps) => {
         await handleSetPush(10000);
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [todo.notificationIsOn]);
 
   const handleCancelPush = async () => {
